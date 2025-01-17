@@ -1,0 +1,9 @@
+import scrapy
+
+class ExampleSpider(scrapy.Spider):
+    name = 'example'
+    start_urls = ['https://example.com']
+
+    def parse(self, response):
+        for link in response.css('a::attr(href)').getall():
+            yield {'url': link}
