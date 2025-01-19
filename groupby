@@ -1,0 +1,2 @@
+grouped = data.groupby('department')['salary'].mean()  # 按部门分组计算平均工资
+print(grouped)
