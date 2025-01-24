@@ -1,0 +1,8 @@
+// 创建Actor
+FVector Location(0.f, 0.f, 100.f);
+FRotator Rotation(0.f, 0.f, 0.f);
+AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), Location, Rotation);
+if (SpawnedActor)
+{
+    UE_LOG(LogTemp, Warning, TEXT("Actor created at %s"), *Location.ToString());
+}
