@@ -1,0 +1,17 @@
+UFUNCTION(Server, Reliable)
+void ServerHandleAction();
+
+UFUNCTION(NetMulticast, Reliable)
+void MulticastHandleAction();
+
+void AMyActor::HandleAction()
+{
+	if (HasAuthority())
+	{
+		MulticastHandleAction();
+	}
+	else
+	{
+		ServerHandleAction();
+	}
+}
