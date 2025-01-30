@@ -1,0 +1,36 @@
+import pygame
+
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("发射子弹")
+
+player_image = pygame.image.load("player.png")
+player_rect = player_image.get_rect(center=(400, 500))
+bullets = []
+
+running = True
+while running:
+    screen.fill((0, 0, 0))
+    screen.blit(player_image, player_rect.topleft)
+
+    # 更新子弹位置
+    for bullet in bullets:
+        bullet.y -= 10
+        pygame.draw.rect(screen, (255, 255, 0), bullet)
+
+    bullets = [b for b in bullets if b.y > 0]  # 移除屏幕外的子弹
+    pygame.display.update()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            bullets.append(pygame.Rect(player_rect.centerx - 5, player_rect.top - 10, 10, 20))
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        player_rect.x -= 5
+    if keys[pygame.K_RIGHT]:
+        player_rect.x += 5
+
+pygame.quit()
