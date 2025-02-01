@@ -1,0 +1,10 @@
+import turtle
+
+def draw_square():
+    turtle.speed(3)
+    for _ in range(4):
+        turtle.forward(100)
+        turtle.right(90)
+    turtle.done()
+
+draw_square()
