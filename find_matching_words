@@ -1,0 +1,8 @@
+def find_matching_words(text, pattern)
+  regex = Regexp.new(pattern)
+  text.split.select { |word| word.match(regex) }
+end
+
+text = "Hello there, how are you today?"
+pattern = "\\b[Hh]\\w+"  # 匹配以 H 或 h 开头的单词
+puts find_matching_words(text, pattern)
