@@ -1,0 +1,14 @@
+particles = []
+
+def add_particles(position):
+    for _ in range(10):
+        particles.append([list(position), [random.uniform(-2, 2), random.uniform(-2, 2)]])
+
+def draw_particles():
+    for particle in particles:
+        pygame.draw.circle(screen, (255, 255, 0), [int(particle[0][0]), int(particle[0][1])], 3)
+        particle[0][0] += particle[1][0]
+        particle[0][1] += particle[1][1]
+
+add_particles(player_pos)
+draw_particles()
