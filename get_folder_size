@@ -1,0 +1,10 @@
+import os
+
+def get_folder_size(folder):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(folder):
+        for f in filenames:
+            total_size += os.path.getsize(os.path.join(dirpath, f))
+    return total_size / (1024 * 1024)  # 转换为 MB
+
+print(f"文件夹大小: {get_folder_size('path_to_folder'):.2f} MB")
