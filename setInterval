@@ -1,0 +1,4 @@
+setInterval(() => {
+    const now = new Date();
+    document.body.innerHTML = `<h1>当前时间: ${now.toLocaleTimeString()}</h1>`;
+}, 1000);
