@@ -1,0 +1,28 @@
+import hashlib
+import json
+
+def proof_of_work(block, difficulty=2):
+    """
+    根据给定难度计算区块有效的 nonce 及哈希值
+    """
+    nonce = 0
+    while True:
+        block['nonce'] = nonce
+        block_string = json.dumps(block, sort_keys=True)
+        hash_result = hashlib.sha256(block_string.encode()).hexdigest()
+        if hash_result.startswith('0' * difficulty):
+            return nonce, hash_result
+        nonce += 1
+
+# 示例区块数据
+block = {
+    'index': 1,
+    'transactions': [],
+    'timestamp': 1630234567,
+    'previous_hash': 'abc123',
+    'nonce': 0
+}
+
+nonce, valid_hash = proof_of_work(block, difficulty=2)
+print("有效的 nonce:", nonce)
+print("区块哈希:", valid_hash)
