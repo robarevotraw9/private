@@ -1,0 +1,7 @@
+web3.eth.getAccounts()
+  .then(accounts => {
+    console.log('账户列表:', accounts);
+  })
+  .catch(error => {
+    console.error('获取账户失败:', error);
+  });
