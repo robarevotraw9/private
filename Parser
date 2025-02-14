@@ -1,0 +1,71 @@
+import re
+
+class Lexer:
+    def __init__(self, text):
+        self.tokens = re.findall(r'\d+\.?\d*|[+\-*/()]', text)
+        self.index = 0
+    
+    def get_next_token(self):
+        if self.index < len(self.tokens):
+            token = self.tokens[self.index]
+            self.index += 1
+            return token
+        return None
+
+class Parser:
+    def __init__(self, lexer):
+        self.lexer = lexer
+        self.current_token = self.lexer.get_next_token()
+    
+    def eat(self, token_type):
+        if self.current_token == token_type:
+            self.current_token = self.lexer.get_next_token()
+        else:
+            raise Exception(f"语法错误: 期望 {token_type}，但得到 {self.current_token}")
+    
+    def factor(self):
+        token = self.current_token
+        if token is None:
+            raise Exception("意外的结束")
+        if token == '(':
+            self.eat('(')
+            result = self.expr()
+            self.eat(')')
+            return result
+        else:
+            self.eat(token)
+            return float(token)
+    
+    def term(self):
+        result = self.factor()
+        while self.current_token in ('*', '/'):
+            op = self.current_token
+            if op == '*':
+                self.eat('*')
+                result *= self.factor()
+            elif op == '/':
+                self.eat('/')
+                result /= self.factor()
+        return result
+    
+    def expr(self):
+        result = self.term()
+        while self.current_token in ('+', '-'):
+            op = self.current_token
+            if op == '+':
+                self.eat('+')
+                result += self.term()
+            elif op == '-':
+                self.eat('-')
+                result -= self.term()
+        return result
+
+def evaluate_expression(expression):
+    lexer = Lexer(expression)
+    parser = Parser(lexer)
+    return parser.expr()
+
+if __name__ == "__main__":
+    expression = "3 + 5 * (10 - 4) / 2"
+    result = evaluate_expression(expression)
+    print(f"{expression} = {result}")
