@@ -1,0 +1,46 @@
+# 示例 4: 同步/异步函数的缓存装饰器
+import functools
+import asyncio
+import inspect
+
+def memoize(func):
+    cache = {}
+    
+    @functools.wraps(func)
+    def sync_wrapper(*args, **kwargs):
+        key = (args, tuple(sorted(kwargs.items())))
+        if key not in cache:
+            cache[key] = func(*args, **kwargs)
+        return cache[key]
+    
+    @functools.wraps(func)
+    async def async_wrapper(*args, **kwargs):
+        key = (args, tuple(sorted(kwargs.items())))
+        if key not in cache:
+            cache[key] = await func(*args, **kwargs)
+        return cache[key]
+    
+    return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
+
+# 同步函数示例：计算斐波那契数列
+@memoize
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n-1) + fib(n-2)
+
+# 异步函数示例：计算斐波那契数列
+@memoize
+async def async_fib(n):
+    if n < 2:
+        return n
+    return await async_fib(n-1) + await async_fib(n-2)
+
+if __name__ == '__main__':
+    print("同步斐波那契(10):", fib(10))
+    
+    async def main():
+        result = await async_fib(10)
+        print("异步斐波那契(10):", result)
+    
+    asyncio.run(main())
