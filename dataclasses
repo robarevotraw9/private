@@ -1,0 +1,19 @@
+from dataclasses import dataclass, field
+from typing import List
+
+# 定义数据类
+@dataclass
+class Student:
+    name: str
+    age: int
+    grades: List[int] = field(default_factory=list)
+
+    def average_grade(self):
+        return sum(self.grades) / len(self.grades) if self.grades else 0.0
+
+# 测试数据类
+student = Student(name="Alice", age=20, grades=[85, 90, 78])
+print(student)
+# 输出: Student(name='Alice', age=20, grades
+::contentReference[oaicite:0]{index=0}
+ 
