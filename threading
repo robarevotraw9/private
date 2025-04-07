@@ -1,0 +1,27 @@
+import threading, requests
+from queue import Queue
+
+class SpiderThread(threading.Thread):
+    def __init__(self, queue):
+        threading.Thread.__init__(self)
+        self.queue = queue
+
+    def run(self):
+        while not self.queue.empty():
+            url = self.queue.get()
+            try:
+                response = requests.get(url, timeout=5)
+                print(f"{self.name} fetched {url}: {len(response.text)} bytes")
+            except Exception as e:
+                print(f"Error fetching {url}: {e}")
+            self.queue.task_done()
+
+urls = [f"https://example.com/page{i}" for i in range(10)]
+q = Queue()
+for url in urls:
+    q.put(url)
+
+for _ in range(5):
+    t = SpiderThread(q)
+    t.start()
+q.join()
