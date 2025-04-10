@@ -1,0 +1,29 @@
+import threading, queue
+from PIL import Image, ImageFilter
+import os
+
+def process_image(q, output_dir):
+    while not q.empty():
+        path = q.get()
+        img = Image.open(path)
+        img = img.filter(ImageFilter.GaussianBlur(5))
+        name = os.path.basename(path)
+        img.save(os.path.join(output_dir, name))
+        q.task_done()
+
+image_queue = queue.Queue()
+image_dir = "./images"
+output_dir = "./processed"
+os.makedirs(output_dir, exist_ok=True)
+
+for img_file in os.listdir(image_dir):
+    if img_file.endswith(".jpg"):
+        image_queue.put(os.path.join(image_dir, img_file))
+
+threads = []
+for _ in range(4):
+    t = threading.Thread(target=process_image, args=(image_queue, output_dir))
+    t.start()
+    threads.append(t)
+
+image_queue.join()
