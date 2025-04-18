@@ -1,0 +1,37 @@
+import threading
+import requests
+from queue import Queue
+from bs4 import BeautifulSoup
+
+class SpiderThread(threading.Thread):
+    def __init__(self, queue, results):
+        super().__init__()
+        self.queue = queue
+        self.results = results
+
+    def run(self):
+        while not self.queue.empty():
+            url = self.queue.get()
+            try:
+                resp = requests.get(url, timeout=5)
+                soup = BeautifulSoup(resp.text, 'html.parser')
+                self.results.append((url, soup.title.string.strip()))
+            except Exception as e:
+                self.results.append((url, f"Error: {e}"))
+            finally:
+                self.queue.task_done()
+
+urls = [f"https://example.com/page{i}" for i in range(10)]
+queue = Queue()
+for url in urls:
+    queue.put(url)
+
+results = []
+threads = [SpiderThread(queue, results) for _ in range(5)]
+
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+
+print(results)
